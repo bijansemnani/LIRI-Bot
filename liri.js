@@ -1,5 +1,6 @@
 require("dotenv").config();
 
+var request = require("request");
 var fs = require("fs");
 var Twitter = require('twitter');
 var Spotify = require('node-spotify-api');
@@ -50,7 +51,43 @@ if (option === "spotify-this-song") {
 }
 
 if(option === "movie-this"){
+  var movieName;
+  if(process.argv.length > 4){
+    process.argv.splice(0,3);
+    movieName = process.argv.join(" ");
+  } else {
+    movieName = process.argv[3];
+  }
+  if (movieName === undefined) {
+    movieName = "Mr. Nobody";
+  }
+  console.log(movieName);
+  var queryUrl = "http://www.omdbapi.com/?t=" + movieName + "&y=&plot=short&apikey=trilogy";
 
+  request(queryUrl, function(error, response, body) {
+    if (!error && response.statusCode === 200) {
+
+      // Parse the body of the site and recover just the imdbRating
+      // (Note: The syntax below for parsing isn't obvious. Just spend a few moments dissecting it).
+      var movie = JSON.parse(body);
+      console.log("Title: " + movie.Title);
+      console.log("-------------------------------------------------");
+      console.log("Release Year: " + movie.Year);
+      console.log("-------------------------------------------------");
+      console.log("IMDB Rating: " + movie.imdbRating);
+      console.log("-------------------------------------------------");
+      console.log("Rotten Tomatoes Rating: " + movie.Ratings[1].Value);
+      console.log("-------------------------------------------------");
+      console.log("Country: " + movie.Country);
+      console.log("-------------------------------------------------");
+      console.log("Language: " + movie.Language);
+      console.log("-------------------------------------------------");
+      console.log("Plot: " + movie.Plot);
+      console.log("-------------------------------------------------");
+      console.log("Actors: " + movie.Actors);
+      console.log("-------------------------------------------------");
+    }
+  });
 }
 
 if (option === "do-what-it-says") {
