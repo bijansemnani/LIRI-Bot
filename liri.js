@@ -18,3 +18,28 @@ if(option === "my-tweets"){
     }
   });
 }
+
+if (option === "spotify-this-song") {
+  var track;
+  if(process.argv.length > 4){
+    process.argv.splice(0,3);
+    track = process.argv.join(" ");
+  } else {
+    track = process.argv[3];
+  }
+  if (track === undefined) {
+    track = "The Sign";
+  }
+  spotify.search({ type: 'track', query: track, limit: 10 }, function(err, data) {
+    if (err) {
+      return console.log('Error occurred: ' + err);
+    }
+    for (var i = 0; i < data.tracks.items.length; i++) {
+      console.log("Artist: " + data.tracks.items[i].artists[0].name);
+      console.log("Track Name: " + data.tracks.items[i].name);
+      console.log("Track Preview: " + data.tracks.items[i].album.external_urls.spotify);
+      console.log("Track Album: " + data.tracks.items[i].album.name);
+      console.log("----------------------------------------------------");
+    }
+  });
+}
